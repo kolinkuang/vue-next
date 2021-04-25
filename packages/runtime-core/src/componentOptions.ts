@@ -647,6 +647,7 @@ export function applyOptions(
     if (deferredData.length) {
       deferredData.forEach(dataFn => resolveData(instance, dataFn, publicThis))
     }
+    // TODO data 选项的响应式处理
     if (dataOptions) {
       // @ts-ignore dataOptions is not fully type safe
       resolveData(instance, dataOptions, publicThis)
@@ -889,6 +890,7 @@ function resolveData(
     )
   }
   shouldCacheAccess = false
+  // TODO 获取 data 函数返回的对象
   const data = dataFn.call(publicThis, publicThis)
   shouldCacheAccess = true
   if (__DEV__ && isPromise(data)) {
@@ -901,6 +903,7 @@ function resolveData(
   if (!isObject(data)) {
     __DEV__ && warn(`data() should return an object.`)
   } else if (instance.data === EMPTY_OBJ) {
+    // TODO 其实 data 还是使用 reactive 做的响应式
     instance.data = reactive(data)
   } else {
     // existing data: this is a mixin or extends.

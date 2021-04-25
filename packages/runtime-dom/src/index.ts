@@ -51,6 +51,7 @@ export const hydrate = ((...args) => {
   ensureHydrationRenderer().hydrate(...args)
 }) as RootHydrateFunction
 
+// TODO: 获取 vue 实例
 export const createApp = ((...args) => {
   const app = ensureRenderer().createApp(...args)
 
@@ -60,7 +61,9 @@ export const createApp = ((...args) => {
   }
 
   const { mount } = app
+  // TODO 跟 2.0 一样重新装饰了 app.mount()
   app.mount = (containerOrSelector: Element | ShadowRoot | string): any => {
+    // TODO container 宿主真实 DOM
     const container = normalizeContainer(containerOrSelector)
     if (!container) return
     const component = app._component

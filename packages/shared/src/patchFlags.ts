@@ -67,7 +67,7 @@ export const enum PatchFlags {
   /**
    * Indicates a fragment with keyed or partially keyed children
    */
-  KEYED_FRAGMENT = 1 << 7,
+  KEYED_FRAGMENT = 1 << 7, // TODO 10000000 128
 
   /**
    * Indicates a fragment with unkeyed children.

@@ -60,6 +60,7 @@ export function effect<T = any>(
     fn = fn.raw
   }
   const effect = createReactiveEffect(fn, options)
+  // TODO 计算属性会懒执行
   if (!options.lazy) {
     effect()
   }
@@ -246,7 +247,9 @@ export function trigger(
         oldTarget
       })
     }
+    // TODO 如果用户指定了 scheduler 选项，则按照这个运行副作用函数
     if (effect.options.scheduler) {
+      // TODO 异步更新策略
       effect.options.scheduler(effect)
     } else {
       effect()

@@ -125,6 +125,8 @@ export function createAppAPI<HostElement>(
   render: RootRenderFunction,
   hydrate?: RootHydrateFunction
 ): CreateAppFunction<HostElement> {
+  // TODO 真正的应用程序实例工厂函数
+  //  rootComponent: 用户传入的根组件配置
   return function createApp(rootComponent, rootProps = null) {
     if (rootProps != null && !isObject(rootProps)) {
       __DEV__ && warn(`root props passed to app.mount() must be an object.`)
@@ -136,6 +138,7 @@ export function createAppAPI<HostElement>(
 
     let isMounted = false
 
+    // TODO 应用程序实例
     const app: App = (context.app = {
       _uid: uid++,
       _component: rootComponent as ConcreteComponent,
@@ -231,6 +234,7 @@ export function createAppAPI<HostElement>(
         isSVG?: boolean
       ): any {
         if (!isMounted) {
+          // TODO 根组件虚拟 DOM
           const vnode = createVNode(
             rootComponent as ConcreteComponent,
             rootProps
@@ -249,6 +253,8 @@ export function createAppAPI<HostElement>(
           if (isHydrate && hydrate) {
             hydrate(vnode as VNode<Node, Element>, rootContainer as any)
           } else {
+            // TODO SPA 默认使用 render
+            //  渲染 vnode 为 DOM 并追加到 rootContainer
             render(vnode, rootContainer, isSVG)
           }
           isMounted = true

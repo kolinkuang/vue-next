@@ -279,6 +279,7 @@ export const PublicInstanceProxyHandlers: ProxyHandler<any> = {
       const n = accessCache![key]
       if (n !== undefined) {
         switch (n) {
+          // TODO Vue 实例先从 setup()，再从 data() 获取数据
           case AccessTypes.SETUP:
             return setupState[key]
           case AccessTypes.DATA:

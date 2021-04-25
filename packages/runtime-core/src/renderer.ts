@@ -493,7 +493,9 @@ function baseCreateRenderer(
       n2.dynamicChildren = null
     }
 
+    // TODO n2 是最新的 vnode
     const { type, ref, shapeFlag } = n2
+    // TODO 根据当前虚拟 DOM 代表的不同类型执行不同分支
     switch (type) {
       case Text:
         processText(n1, n2, container, anchor)
@@ -535,6 +537,9 @@ function baseCreateRenderer(
             optimized
           )
         } else if (shapeFlag & ShapeFlags.COMPONENT) {
+          // TODO 位运算结果的表达式大于0，才会进入这里
+          //  1 & 1 === 1, 1 & 0 === 0, 0 & 0 === 0
+          // TODO 根组件会进入这里
           processComponent(
             n1,
             n2,
@@ -1268,6 +1273,7 @@ function baseCreateRenderer(
           optimized
         )
       } else {
+        // TODO 初始化走这里
         mountComponent(
           n2,
           container,
@@ -1292,6 +1298,7 @@ function baseCreateRenderer(
     isSVG,
     optimized
   ) => {
+    // TODO 1.创建根组件实例
     const instance: ComponentInternalInstance = (initialVNode.component = createComponentInstance(
       initialVNode,
       parentComponent,
@@ -1316,6 +1323,7 @@ function baseCreateRenderer(
     if (__DEV__) {
       startMeasure(instance, `init`)
     }
+    // TODO 2.执行初始化：实例属性、状态初始化
     setupComponent(instance)
     if (__DEV__) {
       endMeasure(instance, `init`)
@@ -1335,6 +1343,7 @@ function baseCreateRenderer(
       return
     }
 
+    // TODO 3.渲染副作用安装
     setupRenderEffect(
       instance,
       initialVNode,
@@ -1396,6 +1405,7 @@ function baseCreateRenderer(
     optimized
   ) => {
     // create reactive effect for rendering
+    // TODO 添加副作用函数
     instance.update = effect(function componentEffect() {
       if (!instance.isMounted) {
         let vnodeHook: VNodeHook | null | undefined
@@ -1415,6 +1425,8 @@ function baseCreateRenderer(
         if (__DEV__) {
           startMeasure(instance, `render`)
         }
+
+        // TODO 首次渲染
         const subTree = (instance.subTree = renderComponentRoot(instance))
         if (__DEV__) {
           endMeasure(instance, `render`)
@@ -1513,6 +1525,7 @@ function baseCreateRenderer(
         if (__DEV__) {
           startMeasure(instance, `render`)
         }
+        // TODO 计算最新的 vnode
         const nextTree = renderComponentRoot(instance)
         if (__DEV__) {
           endMeasure(instance, `render`)
@@ -1747,6 +1760,7 @@ function baseCreateRenderer(
   }
 
   // can be all-keyed or mixed
+  // TODO 对标 Vue 2 中的 updateChildren()
   const patchKeyedChildren = (
     c1: VNode[],
     c2: VNodeArrayChildren,
@@ -1763,9 +1777,11 @@ function baseCreateRenderer(
     let e1 = c1.length - 1 // prev ending index
     let e2 = l2 - 1 // next ending index
 
+    // TODO 找最长递增子序列
     // 1. sync from start
     // (a b) c
     // (a b) d e
+    // TODO 掐头操作
     while (i <= e1 && i <= e2) {
       const n1 = c1[i]
       const n2 = (c2[i] = optimized
@@ -1792,6 +1808,7 @@ function baseCreateRenderer(
     // 2. sync from end
     // a (b c)
     // d e (b c)
+    // TODO 去尾操作
     while (i <= e1 && i <= e2) {
       const n1 = c1[e1]
       const n2 = (c2[e2] = optimized
@@ -1816,6 +1833,7 @@ function baseCreateRenderer(
       e2--
     }
 
+    // TODO 批量增加
     // 3. common sequence + mount
     // (a b)
     // (a b) c
@@ -1846,6 +1864,7 @@ function baseCreateRenderer(
       }
     }
 
+    // TODO 批量删除
     // 4. common sequence + unmount
     // (a b) c
     // (a b)
@@ -1860,6 +1879,7 @@ function baseCreateRenderer(
       }
     }
 
+    // TODO 对标 Vue 2 中的查找操作
     // 5. unknown sequence
     // [i ... e1 + 1]: a b [c d e] f g
     // [i ... e2 + 1]: a b [e d c h] f g
@@ -2279,6 +2299,7 @@ function baseCreateRenderer(
         unmount(container._vnode, null, null, true)
       }
     } else {
+      // TODO 初始化走这里
       patch(container._vnode || null, vnode, container, null, null, null, isSVG)
     }
     flushPostFlushCbs()
@@ -2307,9 +2328,10 @@ function baseCreateRenderer(
     >)
   }
 
+  // TODO 返回的渲染器在这里
   return {
-    render,
-    hydrate,
+    render, // TODO 渲染方法：传入 VDOM，传出 DOM
+    hydrate, // TODO 注水：SSR（反序列化）
     createApp: createAppAPI(render, hydrate)
   }
 }

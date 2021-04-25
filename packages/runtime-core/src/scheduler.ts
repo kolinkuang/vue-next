@@ -95,6 +95,8 @@ export function queueJob(job: SchedulerJob) {
     if (pos > -1) {
       queue.splice(pos, 0, job)
     } else {
+      //TODO 组件更新函数入队
+      // 类似 vue2 中 watcher 入队操作
       queue.push(job)
     }
     queueFlush()
@@ -232,6 +234,7 @@ function flushJobs(seen?: CountMap) {
   queue.sort((a, b) => getId(a) - getId(b))
 
   try {
+    // TODO 循环执行所有更新函数
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
       const job = queue[flushIndex]
       if (job) {

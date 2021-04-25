@@ -567,11 +567,13 @@ function setupStatefulComponent(
   instance.accessCache = Object.create(null)
   // 1. create public instance / render proxy
   // also mark it raw so it's never observed
+  // TODO proxy 是一个响应式对象
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers)
   if (__DEV__) {
     exposePropsOnRenderContext(instance)
   }
   // 2. call setup()
+  // TODO 处理用户配置的 setup 选项
   const { setup } = Component
   if (setup) {
     const setupContext = (instance.setupContext =
@@ -579,6 +581,9 @@ function setupStatefulComponent(
 
     currentInstance = instance
     pauseTracking()
+    // TODO 执行 setup()
+    //  setup(props, setupContext)
+    //  {slot, attrs, emit}
     const setupResult = callWithErrorHandling(
       setup,
       instance,
@@ -612,6 +617,7 @@ function setupStatefulComponent(
       handleSetupResult(instance, setupResult, isSSR)
     }
   } else {
+    // TODO 传统选项方式走这里
     finishComponentSetup(instance, isSSR)
   }
 }
@@ -674,6 +680,7 @@ export function registerRuntimeCompiler(_compile: any) {
   compile = _compile
 }
 
+// TODO 处理除了 setup 之外的其他选项
 function finishComponentSetup(
   instance: ComponentInternalInstance,
   isSSR: boolean
@@ -691,11 +698,14 @@ function finishComponentSetup(
       Component.render ||
       NOOP) as InternalRenderFunction
   } else if (!instance.render) {
+    // TODO 如果当前组件实例没有渲染函数，则通过编译模板得到它
     // could be set from setup()
     if (compile && Component.template && !Component.render) {
       if (__DEV__) {
         startMeasure(instance, `compile`)
       }
+      // TODO template 是 vue/index.ts 设置的
+      // TODO 转换 template => render
       Component.render = compile(Component.template, {
         isCustomElement: instance.appContext.config.isCustomElement,
         delimiters: Component.delimiters
@@ -719,6 +729,7 @@ function finishComponentSetup(
   }
 
   // support for 2.x options
+  // TODO 支持 2.0 选项 API
   if (__FEATURE_OPTIONS_API__) {
     currentInstance = instance
     pauseTracking()
